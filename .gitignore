@@ -1,0 +1,16 @@
+**/node_modules
+**/build
+**/coverage
+
+/.pnp
+.pnp.js
+
+.DS_Store
+.idea
+
+.env
+.env.*
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

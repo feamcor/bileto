@@ -1,16 +1,24 @@
+# dependencies
 **/node_modules
-**/build
-**/coverage
-
 /.pnp
 .pnp.js
 
+# build
+**/build
+
+# testing
+**/coverage
+
+# miscellaneous
 .DS_Store
 .idea
+*.code-workspace
 
+# environment
 .env
 .env.*
 
+# logging
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

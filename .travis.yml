@@ -5,6 +5,7 @@ node_js:
 before_script:
   - npm install --global ganache-cli
   - npm install --global truffle
+  - npm install
 
 script:
   - ganache-cli &

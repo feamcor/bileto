@@ -183,37 +183,37 @@ contract Bileto is Ownable, ReentrancyGuard {
 
   /// @dev Verify that ticket store is open, otherwise revert.
   modifier storeOpen() {
-    require(store.status == StoreStatus.Open, "BILETO001");
+    require(store.status == StoreStatus.Open, "E001");
     _;
   }
 
   /// @dev Verify that event ID is within current range.
   modifier validEventId(uint _eventId) {
-    require(_eventId <= store.counterEvents.current, "BILETO002");
+    require(_eventId <= store.counterEvents.current, "E002");
     _;
   }
 
   /// @dev Verify that purchase ID is within current range.
   modifier validPurchaseId(uint _purchaseId) {
-    require(_purchaseId <= store.counterPurchases.current, "BILETO003");
+    require(_purchaseId <= store.counterPurchases.current, "E003");
     _;
   }
 
   /// @dev Verify that transaction on an event was triggered by its organizer, otherwise revert.
   modifier onlyOrganizer(uint _eventId) {
-    require(msg.sender == store.events[_eventId].organizer, "BILETO004");
+    require(msg.sender == store.events[_eventId].organizer, "E004");
     _;
   }
 
   /// @dev Verify that transaction on an event was triggered by its organizer or store owner.
   modifier onlyOwnerOrOrganizer(uint _eventId) {
-    require(isOwner() || msg.sender == store.events[_eventId].organizer, "BILETO005");
+    require(isOwner() || msg.sender == store.events[_eventId].organizer, "E005");
     _;
   }
 
   /// @dev Verify that a purchase was completed, otherwise revert.
   modifier purchaseCompleted(uint _purchaseId) {
-    require(store.purchases[_purchaseId].status == PurchaseStatus.Completed, "BILETO006");
+    require(store.purchases[_purchaseId].status == PurchaseStatus.Completed, "E006");
     _;
   }
 
@@ -226,14 +226,22 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @notice Fallback function.
   /// @notice Funds will be locked until store is closed, when owner will be able to withdraw them.
   function() external payable {
-    require(msg.data.length == 0, "BILETO008");
+    require(msg.data.length == 0, "E008");
     store.excessBalance = store.excessBalance.add(msg.value);
   }
 
   /// @notice Open ticket store.
   /// @dev emit `StoreOpen` event
-  function openStore() external nonReentrant onlyOwner {
-    require(store.status == StoreStatus.Created || store.status == StoreStatus.Suspended, "BILETO009");
+  function openStore() 
+    external 
+    nonReentrant 
+    onlyOwner 
+  {
+    require(
+      store.status == StoreStatus.Created || 
+      store.status == StoreStatus.Suspended, 
+      "E009"
+    );
     store.status = StoreStatus.Open;
     emit StoreOpen(msg.sender);
   }
@@ -241,7 +249,12 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @notice Suspend ticket store.
   /// @notice Should be used with extreme caution and on exceptional cases only.
   /// @dev emit `StoreSuspended` event
-  function suspendStore() external nonReentrant onlyOwner storeOpen {
+  function suspendStore() 
+    external 
+    nonReentrant 
+    onlyOwner 
+    storeOpen 
+  {
     store.status = StoreStatus.Suspended;
     emit StoreSuspended(msg.sender);
   }
@@ -251,9 +264,13 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @notice Ticket store won't close while there are refundable balance left.
   /// @notice Only settled and excess balance will be transferred to store owner.
   /// @dev emit `StoreClosed` event
-  function closeStore() external nonReentrant onlyOwner {
-    require(store.status != StoreStatus.Closed, "BILETO010");
-    // require(store.refundableBalance == 0, "BILETO011");
+  function closeStore() 
+    external 
+    nonReentrant 
+    onlyOwner 
+  {
+    require(store.status != StoreStatus.Closed, "E010");
+    // require(store.refundableBalance == 0, "E011");
     store.status = StoreStatus.Closed;
     uint _total = store.settledBalance.add(store.excessBalance);
     if (_total > 0) {
@@ -278,12 +295,18 @@ contract Bileto is Ownable, ReentrancyGuard {
     uint _storeIncentive,
     uint _ticketPrice,
     uint _ticketsOnSale
-  ) external nonReentrant onlyOwner storeOpen returns (uint eventId) {
-    require(!_organizer.isContract(), "BILETO012");
-    require(bytes(_externalId).length != 0, "BILETO013");
-    require(bytes(_name).length != 0, "BILETO014");
-    require(_storeIncentive >= 0 && _storeIncentive <= 10000, "BILETO015");
-    require(_ticketsOnSale > 0, "BILETO016");
+  ) 
+    external 
+    nonReentrant 
+    onlyOwner 
+    storeOpen 
+    returns (uint eventId)
+  {
+    require(!_organizer.isContract(), "E012");
+    require(bytes(_externalId).length != 0, "E013");
+    require(bytes(_name).length != 0, "E014");
+    require(_storeIncentive >= 0 && _storeIncentive <= 10000, "E015");
+    require(_ticketsOnSale > 0, "E016");
     eventId = store.counterEvents.next();
     store.events[eventId].status = EventStatus.Created;
     store.events[eventId].externalId = keccak256(bytes(_externalId));
@@ -311,7 +334,11 @@ contract Bileto is Ownable, ReentrancyGuard {
     validEventId(_eventId)
     onlyOrganizer(_eventId)
   {
-    require(store.events[_eventId].status == EventStatus.Created || store.events[_eventId].status == EventStatus.SalesSuspended, "BILETO017");
+    require(
+      store.events[_eventId].status == EventStatus.Created || 
+      store.events[_eventId].status == EventStatus.SalesSuspended, 
+      "E017"
+    );
     store.events[_eventId].status = EventStatus.SalesStarted;
     emit EventSalesStarted(_eventId, store.events[_eventId].externalId, msg.sender);
   }
@@ -326,7 +353,7 @@ contract Bileto is Ownable, ReentrancyGuard {
     validEventId(_eventId)
     onlyOrganizer(_eventId)
   {
-    require(store.events[_eventId].status == EventStatus.SalesStarted, "BILETO018");
+    require(store.events[_eventId].status == EventStatus.SalesStarted, "E018");
     store.events[_eventId].status = EventStatus.SalesSuspended;
     emit EventSalesSuspended(_eventId, store.events[_eventId].externalId, msg.sender);
   }
@@ -342,7 +369,7 @@ contract Bileto is Ownable, ReentrancyGuard {
     validEventId(_eventId)
     onlyOrganizer(_eventId)
   {
-    require(store.events[_eventId].status == EventStatus.SalesStarted || store.events[_eventId].status == EventStatus.SalesSuspended, "BILETO019");
+    require(store.events[_eventId].status == EventStatus.SalesStarted || store.events[_eventId].status == EventStatus.SalesSuspended, "E019");
     store.events[_eventId].status = EventStatus.SalesFinished;
     emit EventSalesFinished(_eventId, store.events[_eventId].externalId, msg.sender);
   }
@@ -358,7 +385,7 @@ contract Bileto is Ownable, ReentrancyGuard {
     validEventId(_eventId)
     onlyOrganizer(_eventId)
   {
-    require(store.events[_eventId].status == EventStatus.SalesFinished, "BILETO020");
+    require(store.events[_eventId].status == EventStatus.SalesFinished, "E020");
     store.events[_eventId].status = EventStatus.Completed;
     emit EventCompleted(_eventId, store.events[_eventId].externalId, msg.sender);
   }
@@ -375,7 +402,7 @@ contract Bileto is Ownable, ReentrancyGuard {
     storeOpen
     onlyOwner
   {
-    require(store.events[_eventId].status == EventStatus.Completed, "BILETO021");
+    require(store.events[_eventId].status == EventStatus.Completed, "E021");
     store.events[_eventId].status = EventStatus.Settled;
     uint _eventBalance = store.events[_eventId].eventBalance;
     uint _storeIncentive = store.events[_eventId].storeIncentive;
@@ -399,7 +426,12 @@ contract Bileto is Ownable, ReentrancyGuard {
     validEventId(_eventId)
     onlyOrganizer(_eventId)
   {
-    require(store.events[_eventId].status == EventStatus.Created || store.events[_eventId].status == EventStatus.SalesStarted || store.events[_eventId].status == EventStatus.SalesSuspended || store.events[_eventId].status == EventStatus.SalesFinished, "BILETO022");
+    require(
+      store.events[_eventId].status == EventStatus.Created || 
+      store.events[_eventId].status == EventStatus.SalesStarted || 
+      store.events[_eventId].status == EventStatus.SalesSuspended || 
+      store.events[_eventId].status == EventStatus.SalesFinished, 
+      "E022");
     store.events[_eventId].status = EventStatus.Cancelled;
     emit EventCancelled( _eventId, store.events[_eventId].externalId, msg.sender );
   }
@@ -426,14 +458,14 @@ contract Bileto is Ownable, ReentrancyGuard {
     validEventId(_eventId)
     returns (uint purchaseId)
   {
-    require(store.events[_eventId].status == EventStatus.SalesStarted, "BILETO023");
-    require(!msg.sender.isContract(), "BILETO024");
-    require(_quantity > 0, "BILETO025");
-    require(_quantity <= store.events[_eventId].ticketsLeft, "BILETO026");
-    require(bytes(_externalId).length != 0, "BILETO027");
-    require(_timestamp > 0, "BILETO028");
-    require(bytes(_customerId).length != 0, "BILETO029");
-    require(msg.value == _quantity.mul(store.events[_eventId].ticketPrice), "BILETO030");
+    require(store.events[_eventId].status == EventStatus.SalesStarted, "E023");
+    require(!msg.sender.isContract(), "E024");
+    require(_quantity > 0, "E025");
+    require(_quantity <= store.events[_eventId].ticketsLeft, "E026");
+    require(bytes(_externalId).length != 0, "E027");
+    require(_timestamp > 0, "E028");
+    require(bytes(_customerId).length != 0, "E029");
+    require(msg.value == _quantity.mul(store.events[_eventId].ticketPrice), "E030");
     purchaseId = store.counterPurchases.next();
     store.purchases[purchaseId].status = PurchaseStatus.Completed;
     store.purchases[purchaseId].eventId = _eventId;
@@ -471,10 +503,10 @@ contract Bileto is Ownable, ReentrancyGuard {
     purchaseCompleted(_purchaseId)
   {
     uint _eventId = store.purchases[_purchaseId].eventId;
-    require((store.status == StoreStatus.Open || store.status == StoreStatus.Closed) && (store.events[_eventId].status == EventStatus.SalesStarted || store.events[_eventId].status == EventStatus.SalesSuspended || store.events[_eventId].status == EventStatus.SalesFinished || store.events[_eventId].status == EventStatus.Cancelled), "BILETO031");
-    require(msg.sender == store.purchases[_purchaseId].customer, "BILETO032");
-    require(keccak256(bytes(_customerId)) == store.purchases[_purchaseId].customerId, "BILETO033");
-    require(keccak256(bytes(_externalId)) == store.purchases[_purchaseId].externalId, "BILETO034");
+    require((store.status == StoreStatus.Open || store.status == StoreStatus.Closed) && (store.events[_eventId].status == EventStatus.SalesStarted || store.events[_eventId].status == EventStatus.SalesSuspended || store.events[_eventId].status == EventStatus.SalesFinished || store.events[_eventId].status == EventStatus.Cancelled), "E031");
+    require(msg.sender == store.purchases[_purchaseId].customer, "E032");
+    require(keccak256(bytes(_customerId)) == store.purchases[_purchaseId].customerId, "E033");
+    require(keccak256(bytes(_externalId)) == store.purchases[_purchaseId].externalId, "E034");
     store.purchases[_purchaseId].status = PurchaseStatus.Cancelled;
     store.events[_eventId].ticketsCancelled = store.events[_eventId].ticketsCancelled.add( store.purchases[_purchaseId].quantity );
     store.events[_eventId].ticketsLeft = store.events[_eventId].ticketsLeft.add( store.purchases[_purchaseId].quantity );
@@ -495,7 +527,7 @@ contract Bileto is Ownable, ReentrancyGuard {
     onlyOrganizer(_eventId)
     validPurchaseId(_purchaseId)
   {
-    require((store.status == StoreStatus.Open || store.status == StoreStatus.Closed) && store.purchases[_purchaseId].status == PurchaseStatus.Cancelled, "BILETO035");
+    require((store.status == StoreStatus.Open || store.status == StoreStatus.Closed) && store.purchases[_purchaseId].status == PurchaseStatus.Cancelled, "E035");
     store.purchases[_purchaseId].status = PurchaseStatus.Refunded;
     store.events[_eventId].ticketsRefunded = store.events[_eventId].ticketsRefunded.add( store.purchases[_purchaseId].quantity );
     store.events[_eventId].refundableBalance = store.events[_eventId].refundableBalance.sub( store.purchases[_purchaseId].total );
@@ -516,8 +548,8 @@ contract Bileto is Ownable, ReentrancyGuard {
     purchaseCompleted(_purchaseId)
   {
     uint _eventId = store.purchases[_purchaseId].eventId;
-    require(store.events[_eventId].status == EventStatus.SalesStarted || store.events[_eventId].status == EventStatus.SalesSuspended || store.events[_eventId].status == EventStatus.SalesFinished, "BILETO036");
-    require(msg.sender == store.purchases[_purchaseId].customer, "BILETO037");
+    require(store.events[_eventId].status == EventStatus.SalesStarted || store.events[_eventId].status == EventStatus.SalesSuspended || store.events[_eventId].status == EventStatus.SalesFinished, "E036");
+    require(msg.sender == store.purchases[_purchaseId].customer, "E037");
     store.purchases[_purchaseId].status = PurchaseStatus.CheckedIn;
     emit CustomerCheckedIn(_eventId, _purchaseId, msg.sender);
   }
@@ -529,14 +561,14 @@ contract Bileto is Ownable, ReentrancyGuard {
     external
     view
     returns (
-    address storeOwner,
-    uint storeStatus,
-    uint storeSettledBalance,
-    uint storeExcessBalance,
-    uint storeRefundableBalance,
-    uint storeCounterEvents,
-    uint storeCounterPurchases
-  )
+      address storeOwner,
+      uint storeStatus,
+      uint storeSettledBalance,
+      uint storeExcessBalance,
+      uint storeRefundableBalance,
+      uint storeCounterEvents,
+      uint storeCounterPurchases
+    )
   {
     storeOwner = owner();
     storeStatus = uint(store.status);
@@ -556,14 +588,14 @@ contract Bileto is Ownable, ReentrancyGuard {
     view
     validEventId(_eventId)
     returns (
-    uint eventStatus,
-    bytes32 eventExternalId,
-    address eventOrganizer,
-    string memory eventName,
-    uint eventStoreIncentive,
-    uint eventTicketPrice,
-    uint eventTicketsOnSale
-  )
+      uint eventStatus,
+      bytes32 eventExternalId,
+      address eventOrganizer,
+      string memory eventName,
+      uint eventStoreIncentive,
+      uint eventTicketPrice,
+      uint eventTicketsOnSale
+    )
   {
     eventStatus = uint(store.events[_eventId].status);
     eventExternalId = store.events[_eventId].externalId;
@@ -583,15 +615,15 @@ contract Bileto is Ownable, ReentrancyGuard {
     view
     validEventId(_eventId)
     returns (
-    uint eventStatus,
-    uint eventTicketsSold,
-    uint eventTicketsLeft,
-    uint eventTicketsCancelled,
-    uint eventTicketsRefunded,
-    uint eventTicketsCheckedIn,
-    uint eventBalance,
-    uint eventRefundableBalance
-  )
+      uint eventStatus,
+      uint eventTicketsSold,
+      uint eventTicketsLeft,
+      uint eventTicketsCancelled,
+      uint eventTicketsRefunded,
+      uint eventTicketsCheckedIn,
+      uint eventBalance,
+      uint eventRefundableBalance
+    )
   {
     eventStatus = uint(store.events[_eventId].status);
     eventTicketsSold = store.events[_eventId].ticketsSold;
@@ -611,17 +643,17 @@ contract Bileto is Ownable, ReentrancyGuard {
     view
     validPurchaseId(_purchaseId)
     returns (
-    uint purchaseStatus,
-    bytes32 purchaseExternalId,
-    uint purchaseTimestamp,
-    address purchaseCustomer,
-    bytes32 purchaseCustomerId,
-    uint purchaseQuantity,
-    uint purchaseTotal,
-    uint purchaseEventId
-  )
+      uint purchaseStatus,
+      bytes32 purchaseExternalId,
+      uint purchaseTimestamp,
+      address purchaseCustomer,
+      bytes32 purchaseCustomerId,
+      uint purchaseQuantity,
+      uint purchaseTotal,
+      uint purchaseEventId
+    )
   {
-    require(isOwner() || msg.sender == store.purchases[_purchaseId].customer || msg.sender == store.events[store.purchases[_purchaseId].eventId].organizer, "BILETO038");
+    require(isOwner() || msg.sender == store.purchases[_purchaseId].customer || msg.sender == store.events[store.purchases[_purchaseId].eventId].organizer, "E038");
     purchaseStatus = uint(store.purchases[_purchaseId].status);
     purchaseExternalId = store.purchases[_purchaseId].externalId;
     purchaseTimestamp = store.purchases[_purchaseId].timestamp;
@@ -635,9 +667,12 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @notice Get number of events created by an organizer.
   /// @param _organizer organizer address
   /// @return Count of events. Zero in case organizer hasn't yet created any events.
-  function getCountOrganizerEvents(address _organizer) external view returns (uint countEvents)
+  function getCountOrganizerEvents(address _organizer) 
+    external 
+    view 
+    returns (uint countEvents)
   {
-    // require(msg.sender == owner() || msg.sender == _organizer, "BILETO039");
+    // require(msg.sender == owner() || msg.sender == _organizer, "E039");
     countEvents = store.organizerEvents[_organizer].length;
     return countEvents;
   }
@@ -646,10 +681,13 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @param _organizer organizer address
   /// @param _index position in the list. Starting from zero
   /// @return  Event ID
-  function getEventIdByIndex(address _organizer, uint _index) external view returns (uint eventId)
+  function getEventIdByIndex(address _organizer, uint _index) 
+    external 
+    view 
+    returns (uint eventId)
   {
-    require(store.organizerEvents[_organizer].length != 0, "BILETO040");
-    require(_index < store.organizerEvents[_organizer].length, "BILETO041");
+    require(store.organizerEvents[_organizer].length != 0, "E040");
+    require(_index < store.organizerEvents[_organizer].length, "E041");
     eventId = store.organizerEvents[_organizer][_index];
     return eventId;
   }
@@ -657,9 +695,12 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @notice Get number of ticket purchases performed by a customer.
   /// @param _customer customer address
   /// @return Count of purchases. Zero in case customer hasn't yet purchased any tickets.
-  function getCountCustomerPurchases(address _customer) external view returns (uint countPurchases)
+  function getCountCustomerPurchases(address _customer) 
+    external 
+    view 
+    returns (uint countPurchases)
   {
-    // require(msg.sender == owner() || msg.sender == _customer, "BILETO042");
+    // require(msg.sender == owner() || msg.sender == _customer, "E042");
     countPurchases = store.customerPurchases[_customer].length;
     return countPurchases;
   }
@@ -668,17 +709,24 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @param _customer customer address
   /// @param _index position in the list. Starting from zero
   /// @return Purchase ID
-  function getPurchaseIdByIndex(address _customer, uint _index) external view returns (uint purchaseId)
+  function getPurchaseIdByIndex(address _customer, uint _index) 
+    external 
+    view 
+    returns (uint purchaseId)
   {
-    require(store.customerPurchases[_customer].length != 0, "BILETO043");
-    require(_index < store.customerPurchases[_customer].length, "BILETO044");
+    require(store.customerPurchases[_customer].length != 0, "E043");
+    require(_index < store.customerPurchases[_customer].length, "E044");
     purchaseId = store.customerPurchases[_customer][_index];
     return purchaseId;
   }
 
   /// @notice Get number of organizers who dealt with the store.
   /// @return Count of organizers. Zero in case of none yet.
-  function getCountOrganizers() external view returns (uint countOrganizers) {
+  function getCountOrganizers() 
+    external 
+    view 
+    returns (uint countOrganizers) 
+  {
     countOrganizers = store.organizers.length;
     return countOrganizers;
   }
@@ -686,16 +734,23 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @notice Get address of an organizer, according to its position on list of organizers who delt with the store.
   /// @param _index position in the list. Starting from zero
   /// @return Organizer address
-  function getOrganizerByIndex(uint _index) external view returns (address organizer)
+  function getOrganizerByIndex(uint _index) 
+    external 
+    view 
+    returns (address organizer)
   {
-    require(_index < store.organizers.length, "BILETO045");
+    require(_index < store.organizers.length, "E045");
     organizer = store.organizers[_index];
     return organizer;
   }
 
   /// @notice Get number of customers who purchased tickets from the store.
   /// @return Count of customers. Zero in case of none yet.
-  function getCountCustomers() external view returns (uint countCustomers) {
+  function getCountCustomers() 
+    external 
+    view 
+    returns (uint countCustomers) 
+  {
     countCustomers = store.customers.length;
     return countCustomers;
   }
@@ -703,9 +758,12 @@ contract Bileto is Ownable, ReentrancyGuard {
   /// @notice Get address of an customer, according to its position on list of customers who purchased from the store.
   /// @param _index position in the list. Starting from zero
   /// @return Customer address
-  function getCustomerByIndex(uint _index) external view returns (address customer)
+  function getCustomerByIndex(uint _index) 
+    external 
+    view 
+    returns (address customer)
   {
-    require(_index < store.customers.length, "BILETO046");
+    require(_index < store.customers.length, "E046");
     customer = store.customers[_index];
     return customer;
   }
@@ -726,5 +784,4 @@ contract Bileto is Ownable, ReentrancyGuard {
     accountIsOrganizer = store.organizerEvents[_account].length > 0;
     accountIsCustomer = store.customerPurchases[_account].length > 0;
   }
-
 }

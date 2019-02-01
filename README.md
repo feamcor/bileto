@@ -45,8 +45,9 @@ TBD
 
 ## ROADMAP
 
-The following list doesn't imply on order of implementation.
+**Note:** the following list doesn't imply on order of implementation.
 
+- [ ] Turn Bileto into a [DAO](https://en.wikipedia.org/wiki/Decentralized_autonomous_organization).
 - [ ] Allow different kinds of tickets, with distinct prices.
 - [ ] Allow assignment of seats.
 - [ ] Allow to increase or decrease number of tickets available for sale.
@@ -55,7 +56,7 @@ The following list doesn't imply on order of implementation.
 - [ ] Allow store balance to be distributed to many accounts.
 - [ ] Allow event balance to be distributed to many accounts.
 - [ ] Split contract between store and events.
-- [ ] Replace store currency from Ether to a utility token.
+- [ ] Replace store currency from Ether to an [ERC-20](https://theethereum.wiki/w/index.php/ERC20_Token_Standard) utility token.
 - [ ] Integrate customer identification with uPort or other identity provider.
 - [ ] Turn tickets into [ERC-721](https://eips.ethereum.org/EIPS/eip-721) NFT deeds.
       _etc._

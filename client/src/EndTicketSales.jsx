@@ -17,8 +17,7 @@ class EndTicketSales extends Component {
   getTxStatus = () => {
     const { transactions, transactionStack } = this.props.drizzleState;
     const txHash = transactionStack[this.state.stackId];
-    if (!txHash) return "...";
-    // console.log(transactions[txHash]);
+    if (!txHash || !transactions[txHash]) return "...";
     return transactions[txHash].status;
   };
 

@@ -64,7 +64,6 @@ class CreateEvent extends Component {
     const { transactions, transactionStack } = this.props.drizzleState;
     const txHash = transactionStack[this.state.stackId];
     if (!txHash || !transactions[txHash]) return "...";
-    // console.log(transactions[txHash]);
     if (transactions[txHash].status === "success") {
       const eventId =
         transactions[txHash].receipt.events.EventCreated.returnValues._id;

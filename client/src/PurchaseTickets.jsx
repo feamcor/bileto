@@ -36,8 +36,7 @@ class PurchaseTickets extends Component {
   getTxStatus = () => {
     const { transactions, transactionStack } = this.props.drizzleState;
     const txHash = transactionStack[this.state.stackId];
-    if (!txHash) return "...";
-    // console.log(transactions[txHash]);
+    if (!txHash || !transactions[txHash]) return "...";
     if (transactions[txHash].status === "success") {
       const purchaseId =
         transactions[txHash].receipt.events.PurchaseCompleted.returnValues._id;

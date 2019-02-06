@@ -18,37 +18,42 @@ class CreateEvent extends Component {
   }
 
   isFormValid = () => {
+    let isValid = true;
     if (
       !this.state._externalId ||
       !this.props.drizzle.web3.utils.isAddress(this.state._organizer) ||
       !this.state._name ||
       !this.state._storeIncentive ||
       !this.state._ticketPrice ||
-      !this.state._ticketsOnSale
+      !this.state._ticketsOnSale ||
+      isNaN(parseInt(this.state._storeIncentive)) ||
+      isNaN(parseFloat(this.state._ticketPrice)) ||
+      isNaN(parseInt(this.state._ticketsOnSale))
     ) {
-      return false;
+      isValid = false;
     }
-    return true;
+    return isValid;
   };
 
-  handleOnClick = event => {
-    event.preventDefault();
-    if (!this.isFormValid()) return null;
+  handleOnSubmit = event => {
+    if (!this.isFormValid()) {
+      event.preventDefault();
+      return null;
+    }
     const { Bileto } = this.props.drizzle.contracts;
     const { web3 } = this.props.drizzle;
-    const incentive = (
-      parseInt(this.state._storeIncentive, 10) * 100
-    ).toString();
+    const incentive = parseInt(this.state._storeIncentive) * 100;
     const ticketPrice = web3.utils.toWei(this.state._ticketPrice, "ether");
     const stackId = Bileto.methods.createEvent.cacheSend(
       this.state._externalId,
       this.state._organizer,
       this.state._name,
-      incentive,
+      incentive.toString(),
       ticketPrice,
       this.state._ticketsOnSale
     );
     this.setState({ stackId });
+    event.preventDefault();
   };
 
   handleOnChange = event => {
@@ -70,16 +75,11 @@ class CreateEvent extends Component {
   };
 
   render() {
-    const { drizzleStatus, web3 } = this.props.drizzleState;
-    if (!drizzleStatus.initialized || web3.status !== "initialized") {
-      return "Loading...";
-    }
-
     return (
       <div className="card shadow text-white bg-info h-100">
         <h5 className="card-header">CREATE event</h5>
         <div className="card-body">
-          <form id="create-event-form">
+          <form onSubmit={this.handleOnSubmit}>
             <div className="input-group mb-2">
               <div className="input-group-prepend">
                 <span className="input-group-text" id="labelEventName">
@@ -201,11 +201,7 @@ class CreateEvent extends Component {
                 required
               />
             </div>
-            <button
-              type="submit"
-              className="btn btn-light"
-              onClick={this.handleOnClick}
-            >
+            <button type="submit" className="btn btn-light">
               submit
             </button>
           </form>

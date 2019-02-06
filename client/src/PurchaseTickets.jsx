@@ -48,11 +48,6 @@ class PurchaseTickets extends Component {
   };
 
   render() {
-    const { drizzleStatus, web3 } = this.props.drizzleState;
-    if (!drizzleStatus.initialized || web3.status !== "initialized") {
-      return "Loading...";
-    }
-
     return (
       <div className="card shadow text-white bg-info h-100">
         <h5 className="card-header">PURCHASE tickets</h5>

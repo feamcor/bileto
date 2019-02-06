@@ -42,11 +42,6 @@ class EventInfo extends Component {
   }
 
   render() {
-    const { drizzleStatus, web3 } = this.props.drizzleState;
-    if (!drizzleStatus.initialized || web3.status !== "initialized") {
-      return "Loading...";
-    }
-
     const { Bileto } = this.props.drizzleState.contracts;
 
     const eventInfo = Bileto.fetchEventInfo[this.state.dataKey1];

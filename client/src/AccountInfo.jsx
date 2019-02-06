@@ -37,11 +37,6 @@ class AccountInfo extends Component {
   }
 
   render() {
-    const { drizzleStatus, web3 } = this.props.drizzleState;
-    if (!drizzleStatus.initialized || web3.status !== "initialized") {
-      return "Loading...";
-    }
-
     const { accounts, accountBalances } = this.props.drizzleState;
     const { Bileto } = this.props.drizzleState.contracts;
 

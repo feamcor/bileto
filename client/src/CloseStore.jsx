@@ -21,11 +21,6 @@ class CloseStore extends Component {
   };
 
   render() {
-    const { drizzleStatus, web3 } = this.props.drizzleState;
-    if (!drizzleStatus.initialized || web3.status !== "initialized") {
-      return "Loading...";
-    }
-
     return (
       <div className="card shadow text-white bg-danger text-center h-100">
         <div className="card-header">

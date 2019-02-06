@@ -33,22 +33,16 @@ class App extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  constructor(props) {
-    super(props);
-    this.handleOnChange = this.handleOnChange.bind(this);
-  }
-
   componentDidMount() {
     const { drizzle } = this.props;
     this.unsubscribe = drizzle.store.subscribe(() => {
       const drizzleState = drizzle.store.getState();
       if (drizzleState.drizzleStatus.initialized) {
-        if (this.state.tracking === false) {
+        if (!this.state.tracking) {
           const { events } = drizzle.contracts.Bileto;
           const { Bileto } = drizzle.options.events;
-          for (let i = 0; i < Bileto.length; i++) {
-            // console.log(`tracking event: ${Bileto[i]}`);
-            events[Bileto[i]]().on("data", event => {
+          for (const eventName of Bileto) {
+            events[eventName]().on("data", event => {
               this.track(event);
             });
           }
@@ -67,7 +61,16 @@ class App extends Component {
   }
 
   render() {
-    if (this.state.loading) return "Loading...";
+    if (
+      this.state.loading ||
+      !this.state.drizzleState ||
+      !this.state.drizzleState.drizzleStatus ||
+      !this.state.drizzleState.drizzleStatus.initialized ||
+      this.state.drizzleState.web3.status !== "initialized"
+    ) {
+      return "Loading...";
+    }
+
     return (
       <React.Fragment>
         <nav className="navbar sticky-top navbar-dark bg-dark">

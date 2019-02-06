@@ -23,11 +23,6 @@ class SettleEvent extends Component {
   };
 
   render() {
-    const { drizzleStatus, web3 } = this.props.drizzleState;
-    if (!drizzleStatus.initialized || web3.status !== "initialized") {
-      return "Loading...";
-    }
-
     return (
       <div className="card shadow bg-warning text-white text-center">
         <div className="card-body">

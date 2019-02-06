@@ -3,7 +3,7 @@
   "name": "Bileto Ticket Store",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "tickets.256.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     }

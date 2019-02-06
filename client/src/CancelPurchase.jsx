@@ -1,33 +1,20 @@
 import React, { Component } from "react";
 
 class CancelPurchase extends Component {
-  state = { stackId: null, _externalId: "", _customerId: "" };
+  state = { txStackId: null, _externalId: "", _customerId: "" };
 
-  constructor(props) {
-    super(props);
-    this.handleOnChange = this.handleOnChange.bind(this);
-    this.handleOnClick = this.handleOnClick.bind(this);
-  }
-
-  handleOnClick = _event => {
-    const { Bileto } = this.props.drizzle.contracts;
-    const stackId = Bileto.methods.cancelPurchase.cacheSend(
+  handleOnClick = event => {
+    const { cancelPurchase } = this.props.drizzle.contracts.Bileto.methods;
+    const txStackId = cancelPurchase.cacheSend(
       this.props.purchaseId,
       this.state._externalId,
       this.state._customerId
     );
-    this.setState({ stackId });
+    this.setState({ txStackId });
   };
 
-  handleOnChange = _event => {
-    this.setState({ [_event.target.name]: _event.target.value });
-  };
-
-  getTxStatus = () => {
-    const { transactions, transactionStack } = this.props.drizzleState;
-    const txHash = transactionStack[this.state.stackId];
-    if (!txHash || !transactions[txHash]) return "...";
-    return transactions[txHash].status;
+  handleOnChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
   };
 
   render() {
@@ -68,7 +55,7 @@ class CancelPurchase extends Component {
           />
         </div>
         <span className="card-footer font-weight-bold text-uppercase">
-          {this.getTxStatus()}
+          {this.props.getTxStatus(this.state.txStackId)}
         </span>
       </div>
     );

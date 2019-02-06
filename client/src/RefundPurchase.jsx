@@ -1,27 +1,13 @@
 import React, { Component } from "react";
 
 class RefundPurchase extends Component {
-  state = { stackId: null };
+  state = { txStackId: null };
 
-  constructor(props) {
-    super(props);
-    this.handleOnClick = this.handleOnClick.bind(this);
-  }
-
-  handleOnClick = _event => {
-    const { Bileto } = this.props.drizzle.contracts;
-    const stackId = Bileto.methods.refundPurchase.cacheSend(
-      this.props.eventId,
-      this.props.purchaseId
-    );
-    this.setState({ stackId });
-  };
-
-  getTxStatus = () => {
-    const { transactions, transactionStack } = this.props.drizzleState;
-    const txHash = transactionStack[this.state.stackId];
-    if (!txHash || !transactions[txHash]) return "...";
-    return transactions[txHash].status;
+  handleOnClick = event => {
+    const { refundPurchase } = this.props.drizzle.contracts.Bileto.methods;
+    const { eventId, purchaseId } = this.props;
+    const txStackId = refundPurchase.cacheSend(eventId, purchaseId);
+    this.setState({ txStackId });
   };
 
   render() {
@@ -37,7 +23,7 @@ class RefundPurchase extends Component {
           </button>
         </div>
         <span className="card-footer font-weight-bold text-uppercase">
-          {this.getTxStatus()}
+          {this.props.getTxStatus(this.state.txStackId)}
         </span>
       </div>
     );

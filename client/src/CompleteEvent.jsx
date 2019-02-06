@@ -1,24 +1,12 @@
 import React, { Component } from "react";
 
 class CompleteEvent extends Component {
-  state = { stackId: null };
+  state = { txStackId: null };
 
-  constructor(props) {
-    super(props);
-    this.handleOnClick = this.handleOnClick.bind(this);
-  }
-
-  handleOnClick = _event => {
-    const { Bileto } = this.props.drizzle.contracts;
-    const stackId = Bileto.methods.completeEvent.cacheSend(this.props.eventId);
-    this.setState({ stackId });
-  };
-
-  getTxStatus = () => {
-    const { transactions, transactionStack } = this.props.drizzleState;
-    const txHash = transactionStack[this.state.stackId];
-    if (!txHash || !transactions[txHash]) return "...";
-    return transactions[txHash].status;
+  handleOnClick = event => {
+    const { completeEvent } = this.props.drizzle.contracts.Bileto.methods;
+    const txStackId = completeEvent.cacheSend(this.props.eventId);
+    this.setState({ txStackId });
   };
 
   render() {
@@ -34,7 +22,7 @@ class CompleteEvent extends Component {
           </button>
         </div>
         <span className="card-footer font-weight-bold text-uppercase">
-          {this.getTxStatus()}
+          {this.props.getTxStatus(this.state.txStackId)}
         </span>
       </div>
     );

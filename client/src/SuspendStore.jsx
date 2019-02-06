@@ -1,22 +1,12 @@
 import React, { Component } from "react";
 
 class SuspendStore extends Component {
-  state = { stackId: null };
+  state = { txStackId: null };
 
-  handleOnClick = _event => {
-    const { Bileto } = this.props.drizzle.contracts;
-    const { accounts } = this.props.drizzleState;
-    const stackId = Bileto.methods.suspendStore.cacheSend({
-      from: accounts[0]
-    });
-    this.setState({ stackId });
-  };
-
-  getTxStatus = () => {
-    const { transactions, transactionStack } = this.props.drizzleState;
-    const txHash = transactionStack[this.state.stackId];
-    if (!txHash || !transactions[txHash]) return "...";
-    return transactions[txHash].status;
+  handleOnClick = event => {
+    const { suspendStore } = this.props.drizzle.contracts.Bileto.methods;
+    const txStackId = suspendStore.cacheSend();
+    this.setState({ txStackId });
   };
 
   render() {
@@ -36,7 +26,7 @@ class SuspendStore extends Component {
           store.
         </span>
         <span className="card-footer font-weight-bold text-uppercase">
-          {this.getTxStatus()}
+          {this.props.getTxStatus(this.state.txStackId)}
         </span>
       </div>
     );

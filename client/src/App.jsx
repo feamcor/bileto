@@ -18,7 +18,7 @@ import RefundPurchase from "./RefundPurchase";
 import CheckIn from "./CheckIn";
 import PurchaseInfo from "./PurchaseInfo";
 
-import logo from "./tickets.png";
+import logo from "./tickets.svg";
 
 class App extends Component {
   state = {
@@ -33,6 +33,17 @@ class App extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  getTxStatus = txStackId => {
+    const { transactions, transactionStack } = this.state.drizzleState;
+    const txHash = transactionStack[txStackId];
+    if (!txHash || !transactions[txHash]) return "...";
+    return transactions[txHash].status;
+  };
+
+  trackContractEvent = eventName => {
+    console.log(eventName);
+  };
+
   componentDidMount() {
     const { drizzle } = this.props;
     this.unsubscribe = drizzle.store.subscribe(() => {
@@ -42,8 +53,8 @@ class App extends Component {
           const { events } = drizzle.contracts.Bileto;
           const { Bileto } = drizzle.options.events;
           for (const eventName of Bileto) {
-            events[eventName]().on("data", event => {
-              this.track(event);
+            events[eventName]().on("data", _eventName => {
+              this.trackContractEvent(_eventName);
             });
           }
         }
@@ -54,10 +65,6 @@ class App extends Component {
 
   componentWillUnmount() {
     this.unsubscribe();
-  }
-
-  track(event) {
-    console.log(event);
   }
 
   render() {
@@ -103,6 +110,7 @@ class App extends Component {
               <OpenStore
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                getTxStatus={this.getTxStatus}
               />
             </div>
           </div>
@@ -119,6 +127,7 @@ class App extends Component {
                   <SuspendStore
                     drizzle={this.props.drizzle}
                     drizzleState={this.state.drizzleState}
+                    getTxStatus={this.getTxStatus}
                   />
                 </div>
               </div>
@@ -127,6 +136,7 @@ class App extends Component {
                   <CloseStore
                     drizzle={this.props.drizzle}
                     drizzleState={this.state.drizzleState}
+                    getTxStatus={this.getTxStatus}
                   />
                 </div>
               </div>
@@ -139,6 +149,7 @@ class App extends Component {
                   <StartTicketSales
                     drizzle={this.props.drizzle}
                     drizzleState={this.state.drizzleState}
+                    getTxStatus={this.getTxStatus}
                     eventId={this.state.eventId}
                   />
                 </div>
@@ -148,6 +159,7 @@ class App extends Component {
                   <SuspendTicketSales
                     drizzle={this.props.drizzle}
                     drizzleState={this.state.drizzleState}
+                    getTxStatus={this.getTxStatus}
                     eventId={this.state.eventId}
                   />
                 </div>
@@ -157,6 +169,7 @@ class App extends Component {
                   <EndTicketSales
                     drizzle={this.props.drizzle}
                     drizzleState={this.state.drizzleState}
+                    getTxStatus={this.getTxStatus}
                     eventId={this.state.eventId}
                   />
                 </div>
@@ -174,6 +187,7 @@ class App extends Component {
               <CompleteEvent
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                getTxStatus={this.getTxStatus}
                 eventId={this.state.eventId}
               />
             </div>
@@ -181,6 +195,7 @@ class App extends Component {
               <SettleEvent
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                getTxStatus={this.getTxStatus}
                 eventId={this.state.eventId}
               />
             </div>
@@ -188,6 +203,7 @@ class App extends Component {
               <CancelEvent
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                getTxStatus={this.getTxStatus}
                 eventId={this.state.eventId}
               />
             </div>
@@ -270,6 +286,7 @@ class App extends Component {
                   <CancelPurchase
                     drizzle={this.props.drizzle}
                     drizzleState={this.state.drizzleState}
+                    getTxStatus={this.getTxStatus}
                     purchaseId={this.state.purchaseId}
                   />
                 </div>
@@ -279,6 +296,7 @@ class App extends Component {
                   <RefundPurchase
                     drizzle={this.props.drizzle}
                     drizzleState={this.state.drizzleState}
+                    getTxStatus={this.getTxStatus}
                     eventId={this.state.eventId}
                     purchaseId={this.state.purchaseId}
                   />
@@ -291,6 +309,7 @@ class App extends Component {
               <CheckIn
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                getTxStatus={this.getTxStatus}
                 purchaseId={this.state.purchaseId}
               />
             </div>

@@ -11,7 +11,7 @@ class SuspendStore extends Component {
 
   render() {
     return (
-      <div className="card shadow text-white bg-warning text-center h-100">
+      <div className="card shadow text-white bg-warning text-center">
         <div className="card-header">
           <button
             type="button"

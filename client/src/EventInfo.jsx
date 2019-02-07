@@ -67,7 +67,7 @@ class EventInfo extends Component {
     } = eventSalesInfo.value;
 
     return (
-      <div className="card shadow h-100">
+      <div className="card shadow">
         <h5 className="card-header">
           Event #{this.props.eventId}: <strong>{eventName}</strong>
         </h5>
@@ -87,7 +87,7 @@ class EventInfo extends Component {
             </li>
           </ul>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-6">
               <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                   <strong># of Tickets on Sale (initial): </strong>
@@ -111,7 +111,7 @@ class EventInfo extends Component {
                 </li>
               </ul>
             </div>
-            <div className="col-md-6">
+            <div className="col-6">
               <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                   <strong># of Tickets Sold: </strong>

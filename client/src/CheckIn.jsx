@@ -11,7 +11,7 @@ class CheckIn extends Component {
 
   render() {
     return (
-      <div className="card shadow text-white bg-dark text-center h-100">
+      <div className="card shadow text-white bg-dark text-center">
         <div className="card-body">
           <button
             type="button"

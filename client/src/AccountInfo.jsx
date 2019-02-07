@@ -55,7 +55,7 @@ class AccountInfo extends Component {
     const countPurchases = countCustomerPurchases.value;
 
     return (
-      <div className="card shadow text-white bg-primary h-100">
+      <div className="card shadow text-white bg-primary">
         <h5 className="card-header">
           <strong>ACCOUNT</strong> information
         </h5>

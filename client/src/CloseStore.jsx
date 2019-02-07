@@ -11,7 +11,7 @@ class CloseStore extends Component {
 
   render() {
     return (
-      <div className="card shadow text-white bg-danger text-center h-100">
+      <div className="card shadow text-white bg-danger text-center">
         <div className="card-header">
           <button
             type="button"

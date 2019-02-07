@@ -47,7 +47,7 @@ class PurchaseInfo extends Component {
     const timestamp = new Date(parseInt(purchaseTimestamp, 10));
 
     return (
-      <div className="card shadow h-100">
+      <div className="card shadow">
         <h5 className="card-header">
           Event #{purchaseEventId}
           {" - "}

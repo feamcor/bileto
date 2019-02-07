@@ -35,7 +35,7 @@ class StoreInfo extends Component {
     } = storeInfo.value;
 
     return (
-      <div className="card shadow h-100">
+      <div className="card shadow">
         <h5 className="card-header">
           Store: <strong>{storeName}</strong>
         </h5>

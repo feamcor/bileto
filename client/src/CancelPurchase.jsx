@@ -19,11 +19,11 @@ class CancelPurchase extends Component {
 
   render() {
     return (
-      <div className="card shadow border-dark text-center h-100">
+      <div className="card shadow bg-danger text-white text-center">
         <div className="card-header">
           <button
             type="button"
-            className="btn btn-danger btn-block"
+            className="btn btn-outline-light btn-block"
             onClick={this.handleOnClick}
           >
             <strong>CANCEL</strong> purchase #{this.props.purchaseId}

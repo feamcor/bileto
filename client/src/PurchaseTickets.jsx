@@ -48,7 +48,7 @@ class PurchaseTickets extends Component {
 
   render() {
     return (
-      <div className="card shadow text-white bg-info h-100">
+      <div className="card shadow text-white bg-info">
         <h5 className="card-header">PURCHASE tickets</h5>
         <div className="card-body">
           <div className="input-group mb-2">

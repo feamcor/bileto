@@ -155,7 +155,7 @@ class App extends Component {
             </div>
           </div>
           <div className="row mt-3">
-            <div className="col-md-4">
+            <div className="col-4">
               <div className="row">
                 <div className="col">
                   <StartTicketSales
@@ -166,7 +166,7 @@ class App extends Component {
                   />
                 </div>
               </div>
-              <div className="row mt-5">
+              <div className="row mt-3">
                 <div className="col">
                   <SuspendTicketSales
                     drizzle={this.props.drizzle}
@@ -176,7 +176,7 @@ class App extends Component {
                   />
                 </div>
               </div>
-              <div className="row mt-5">
+              <div className="row mt-3">
                 <div className="col">
                   <EndTicketSales
                     drizzle={this.props.drizzle}
@@ -187,7 +187,7 @@ class App extends Component {
                 </div>
               </div>
             </div>
-            <div className="col-md-8">
+            <div className="col-8">
               <CreateEvent
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
@@ -195,7 +195,7 @@ class App extends Component {
             </div>
           </div>
           <div className="row mt-3">
-            <div className="col-md-4">
+            <div className="col-4">
               <CompleteEvent
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
@@ -203,7 +203,7 @@ class App extends Component {
                 eventId={this.state.eventId}
               />
             </div>
-            <div className="col-md-4">
+            <div className="col-4">
               <SettleEvent
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
@@ -211,7 +211,7 @@ class App extends Component {
                 eventId={this.state.eventId}
               />
             </div>
-            <div className="col-md-4">
+            <div className="col-4">
               <CancelEvent
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
@@ -277,7 +277,7 @@ class App extends Component {
             </div>
           </div>
           <div className="row mt-3">
-            <div className="col">
+            <div className="col-8">
               <PurchaseInfo
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
@@ -285,16 +285,7 @@ class App extends Component {
                 purchaseId={this.state.purchaseId}
               />
             </div>
-          </div>
-          <div className="row mt-3">
-            <div className="col-md-8">
-              <PurchaseTickets
-                drizzle={this.props.drizzle}
-                drizzleState={this.state.drizzleState}
-                eventId={this.state.eventId}
-              />
-            </div>
-            <div className="col-md-4">
+            <div className="col-4">
               <div className="row">
                 <div className="col">
                   <CancelPurchase
@@ -319,7 +310,14 @@ class App extends Component {
             </div>
           </div>
           <div className="row mt-3">
-            <div className="col">
+            <div className="col-8">
+              <PurchaseTickets
+                drizzle={this.props.drizzle}
+                drizzleState={this.state.drizzleState}
+                eventId={this.state.eventId}
+              />
+            </div>
+            <div className="col-4">
               <CheckIn
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}

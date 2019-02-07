@@ -11,7 +11,7 @@ class SuspendTicketSales extends Component {
 
   render() {
     return (
-      <div className="card shadow border-dark text-center h-100">
+      <div className="card shadow border-dark text-center">
         <div className="card-body">
           <button
             type="button"

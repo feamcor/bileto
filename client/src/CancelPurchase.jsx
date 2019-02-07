@@ -30,29 +30,37 @@ class CancelPurchase extends Component {
           </button>
         </div>
         <div className="card-body">
-          <input
-            type="text"
-            key="_externalId"
-            name="_externalId"
-            value={this.state._externalId}
-            onChange={this.handleOnChange}
-            className="form-control"
-            placeholder="Purchase External ID"
-            aria-label="Purchase External ID"
-            required
-          />
-          <input
-            type="text"
-            key="_customerId"
-            name="_customerId"
-            value={this.state._customerId}
-            onChange={this.handleOnChange}
-            min="1"
-            className="form-control"
-            placeholder="Customer ID"
-            aria-label="Customer Id"
-            required
-          />
+          <div className="row mb-2">
+            <div className="col">
+              <input
+                type="text"
+                key="_externalId"
+                name="_externalId"
+                value={this.state._externalId}
+                onChange={this.handleOnChange}
+                className="form-control"
+                placeholder="Purchase External ID"
+                aria-label="Purchase External ID"
+                required
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <input
+                type="text"
+                key="_customerId"
+                name="_customerId"
+                value={this.state._customerId}
+                onChange={this.handleOnChange}
+                min="1"
+                className="form-control"
+                placeholder="Customer ID"
+                aria-label="Customer Id"
+                required
+              />
+            </div>
+          </div>
         </div>
         <span className="card-footer font-weight-bold text-uppercase">
           {this.props.getTxStatus(this.state.txStackId)}

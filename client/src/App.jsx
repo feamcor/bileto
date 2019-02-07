@@ -88,25 +88,35 @@ class App extends Component {
       return "Loading...";
     }
 
+    const { address } = this.props.drizzle.contracts.Bileto;
+
     return (
       <React.Fragment>
-        <nav className="navbar sticky-top navbar-dark bg-dark">
-          <span className="navbar-brand">
+        <nav className="navbar sticky-top navbar-dark text-white bg-dark">
+          <a href="#" className="navbar-brand">
             <img
               src={logo}
-              width="64"
-              height="64"
+              width="64px"
+              height="64px"
               className="d-inline-block align-middle"
               alt="bileto-logo"
             />
-            <strong> Bileto </strong>a simple ticket store on Ethereum
-            <div className="navbar-text text-muted">
-              <small>
-                &nbsp;&nbsp;&nbsp;
-                {this.props.drizzle.contracts.Bileto.address}
-              </small>
-            </div>
-          </span>
+          </a>
+          <h4 className="nav-text">
+            <strong>BILETO</strong> a simple ticket store on Ethereum
+          </h4>
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <a
+                href={`https://etherscan.io/address/${address}`}
+                className="nav-link"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {address}
+              </a>
+            </li>
+          </ul>
         </nav>
         <div className="container">
           <div className="row mt-3">

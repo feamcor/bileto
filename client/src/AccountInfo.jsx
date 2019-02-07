@@ -3,24 +3,12 @@ import React, { Component } from "react";
 class AccountInfo extends Component {
   state = { dataKey1: null, dataKey2: null, dataKey3: null };
 
-  formatWeiToEther(_amount) {
-    let _output = !_amount
-      ? "???"
-      : this.props.drizzle.web3.utils.fromWei(_amount.toString(), "ether");
-    _output += " ETHER";
-    return _output;
-  }
-
   fetchData() {
-    const { Bileto } = this.props.drizzle.contracts;
+    const { methods } = this.props.drizzle.contracts.Bileto;
     const { accounts } = this.props.drizzleState;
-    const dataKey1 = Bileto.methods.getAccountRole.cacheCall(accounts[0]);
-    const dataKey2 = Bileto.methods.getCountOrganizerEvents.cacheCall(
-      accounts[0]
-    );
-    const dataKey3 = Bileto.methods.getCountCustomerPurchases.cacheCall(
-      accounts[0]
-    );
+    const dataKey1 = methods.getAccountRole.cacheCall(accounts[0]);
+    const dataKey2 = methods.getCountOrganizerEvents.cacheCall(accounts[0]);
+    const dataKey3 = methods.getCountCustomerPurchases.cacheCall(accounts[0]);
     this.setState({ dataKey1, dataKey2, dataKey3 });
   }
 
@@ -29,9 +17,8 @@ class AccountInfo extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (
-      this.props.drizzleState.accounts[0] !== prevProps.drizzleState.accounts[0]
-    ) {
+    const { accounts } = this.props.drizzleState;
+    if (accounts[0] !== prevProps.drizzleState.accounts[0]) {
       this.fetchData();
     }
   }
@@ -79,7 +66,7 @@ class AccountInfo extends Component {
           </p>
           <p className="card-text">
             <strong>Balance: </strong>
-            {this.formatWeiToEther(accountBalances[accounts[0]])}
+            {this.props.fromWeiToEther(accountBalances[accounts[0]])}
           </p>
           <p className="card-text">
             <strong>Roles: </strong>

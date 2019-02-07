@@ -33,14 +33,6 @@ class EventInfo extends Component {
     }
   }
 
-  formatWeiToEther(_amount) {
-    let _output = !_amount
-      ? "???"
-      : this.props.drizzle.web3.utils.fromWei(_amount.toString(), "ether");
-    _output += " ETHER";
-    return _output;
-  }
-
   render() {
     const { Bileto } = this.props.drizzleState.contracts;
 
@@ -103,7 +95,7 @@ class EventInfo extends Component {
                 </li>
                 <li className="list-group-item">
                   <strong>Ticket Price: </strong>
-                  {this.formatWeiToEther(eventTicketPrice)}
+                  {this.props.fromWeiToEther(eventTicketPrice)}
                 </li>
                 <li className="list-group-item">
                   <strong>Store Incentive (%): </strong>
@@ -111,11 +103,11 @@ class EventInfo extends Component {
                 </li>
                 <li className="list-group-item">
                   <strong>Total Balance: </strong>
-                  {this.formatWeiToEther(eventBalance)}
+                  {this.props.fromWeiToEther(eventBalance)}
                 </li>
                 <li className="list-group-item">
                   <strong>Refundable Balance: </strong>
-                  {this.formatWeiToEther(eventRefundableBalance)}
+                  {this.props.fromWeiToEther(eventRefundableBalance)}
                 </li>
               </ul>
             </div>

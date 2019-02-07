@@ -10,11 +10,8 @@ class PurchaseInfo extends Component {
   ];
 
   fetchData() {
-    const { Bileto } = this.props.drizzle.contracts;
-    const dataKey = Bileto.methods.fetchPurchaseInfo.cacheCall(
-      this.props.purchaseId
-    );
-
+    const { methods } = this.props.drizzle.contracts.Bileto;
+    const dataKey = methods.fetchPurchaseInfo.cacheCall(this.props.purchaseId);
     this.setState({ dataKey });
   }
 
@@ -26,14 +23,6 @@ class PurchaseInfo extends Component {
     if (this.props.purchaseId !== prevProps.purchaseId) {
       this.fetchData();
     }
-  }
-
-  formatWeiToEther(_amount) {
-    let _output = !_amount
-      ? "???"
-      : this.props.drizzle.web3.utils.fromWei(_amount.toString(), "ether");
-    _output += " ETHER";
-    return _output;
   }
 
   render() {
@@ -92,7 +81,7 @@ class PurchaseInfo extends Component {
             </li>
             <li className="list-group-item">
               <strong>Purchase Total: </strong>
-              {this.formatWeiToEther(purchaseTotal)}
+              {this.props.fromWeiToEther(purchaseTotal)}
             </li>
           </ul>
         </div>

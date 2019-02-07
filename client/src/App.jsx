@@ -44,6 +44,16 @@ class App extends Component {
     console.log(eventName);
   };
 
+  fromWeiToEther = amount => {
+    const wei =
+      typeof amount === "number" || typeof amount === "object"
+        ? amount.toString()
+        : amount;
+    const { fromWei } = this.props.drizzle.web3.utils;
+    const output = `${!wei ? "???" : fromWei(wei, "ether")} ETHER`;
+    return output;
+  };
+
   componentDidMount() {
     const { drizzle } = this.props;
     this.unsubscribe = drizzle.store.subscribe(() => {
@@ -104,6 +114,7 @@ class App extends Component {
               <AccountInfo
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                fromWeiToEther={this.fromWeiToEther}
               />
             </div>
             <div className="col-4">
@@ -119,6 +130,7 @@ class App extends Component {
               <StoreInfo
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                fromWeiToEther={this.fromWeiToEther}
               />
             </div>
             <div className="col-4">
@@ -213,6 +225,7 @@ class App extends Component {
               <EventInfo
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                fromWeiToEther={this.fromWeiToEther}
                 eventId={this.state.eventId}
               />
             </div>
@@ -268,6 +281,7 @@ class App extends Component {
               <PurchaseInfo
                 drizzle={this.props.drizzle}
                 drizzleState={this.state.drizzleState}
+                fromWeiToEther={this.fromWeiToEther}
                 purchaseId={this.state.purchaseId}
               />
             </div>

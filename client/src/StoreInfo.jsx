@@ -10,14 +10,6 @@ class StoreInfo extends Component {
     this.setState({ dataKey });
   }
 
-  formatWeiToEther(_amount) {
-    let _output = !_amount
-      ? "???"
-      : this.props.drizzle.web3.utils.fromWei(_amount.toString(), "ether");
-    _output += " ETHER";
-    return _output;
-  }
-
   render() {
     const { drizzleStatus, web3 } = this.props.drizzleState;
     if (!drizzleStatus.initialized || web3.status !== "initialized") {
@@ -59,15 +51,15 @@ class StoreInfo extends Component {
             </li>
             <li className="list-group-item">
               <strong>Settled balance: </strong>
-              {this.formatWeiToEther(storeSettledBalance)}
+              {this.props.fromWeiToEther(storeSettledBalance)}
             </li>
             <li className="list-group-item">
               <strong>Excess balance: </strong>
-              {this.formatWeiToEther(storeExcessBalance)}
+              {this.props.fromWeiToEther(storeExcessBalance)}
             </li>
             <li className="list-group-item">
               <strong>Refundable balance: </strong>
-              {this.formatWeiToEther(storeRefundableBalance)}
+              {this.props.fromWeiToEther(storeRefundableBalance)}
             </li>
             <li className="list-group-item">
               <strong># of Events created so far: </strong>

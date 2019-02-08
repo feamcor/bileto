@@ -103,7 +103,7 @@ class App extends Component {
             />
           </a>
           <h4 className="nav-text">
-            <strong>BILETO</strong> a simple ticket store on Ethereum
+            <strong>BILETO</strong> a decentralized ticket store for Ethereum
           </h4>
           <ul className="navbar-nav">
             <li className="nav-item">

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import NavBar from "./NavBar";
 import AccountInfo from "./AccountInfo";
 import StoreInfo from "./StoreInfo";
 import OpenStore from "./OpenStore";
@@ -17,8 +18,6 @@ import CancelPurchase from "./CancelPurchase";
 import RefundPurchase from "./RefundPurchase";
 import CheckIn from "./CheckIn";
 import PurchaseInfo from "./PurchaseInfo";
-
-import logo from "./tickets.svg";
 
 class BiletoApp extends Component {
     state = {
@@ -76,46 +75,25 @@ class BiletoApp extends Component {
         const { address } = this.props.drizzle.contracts.Bileto;
         const account = this.props.drizzleState.accounts[0];
         const accountBalance = this.props.drizzleState.accountBalances[account];
+        const { methods } = this.props.drizzle.contracts.Bileto;
+        const results = this.props.drizzleState.contracts.Bileto;
 
         return (
             <React.Fragment>
-                <nav className="navbar sticky-top navbar-dark text-white bg-dark">
-                    <img
-                        className="navbar-brand d-inline-block align-middle"
-                        src={logo}
-                        width="64px"
-                        height="64px"
-                        alt="bileto-logo"
-                    />
-                    <h4 className="nav-text">
-                        <strong>BILETO</strong> a decentralized ticket store for Ethereum
-                    </h4>
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <a
-                                href={`https://etherscan.io/address/${address}`}
-                                className="nav-link"
-                                rel="noopener noreferrer"
-                                target="_blank"
-                            >
-                                {address}
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <NavBar address={address} />
                 <div className="container">
                     <div className="row mt-3">
                         <div className="col-8">
                             <AccountInfo
                                 account={account}
                                 accountBalance={this.fromWeiToEther(accountBalance)}
-                                methods={this.props.drizzle.contracts.Bileto.methods}
-                                results={this.props.drizzleState.contracts.Bileto}
+                                methods={methods}
+                                results={results}
                             />
                         </div>
                         <div className="col-4">
                             <OpenStore
-                                openStore={this.props.drizzle.contracts.Bileto.methods.openStore}
+                                openStore={methods.openStore}
                                 getTxStatus={this.getTxStatus}
                             />
                         </div>
@@ -132,8 +110,7 @@ class BiletoApp extends Component {
                             <div className="row">
                                 <div className="col">
                                     <SuspendStore
-                                        drizzle={this.props.drizzle}
-                                        drizzleState={this.props.drizzleState}
+                                        suspendStore={methods.suspendStore}
                                         getTxStatus={this.getTxStatus}
                                     />
                                 </div>
@@ -141,8 +118,7 @@ class BiletoApp extends Component {
                             <div className="row mt-3">
                                 <div className="col">
                                     <CloseStore
-                                        drizzle={this.props.drizzle}
-                                        drizzleState={this.props.drizzleState}
+                                        closeStore={methods.closeStore}
                                         getTxStatus={this.getTxStatus}
                                     />
                                 </div>
@@ -154,8 +130,7 @@ class BiletoApp extends Component {
                             <div className="row">
                                 <div className="col">
                                     <StartTicketSales
-                                        drizzle={this.props.drizzle}
-                                        drizzleState={this.props.drizzleState}
+                                        startTicketSales={methods.startTicketSales}
                                         getTxStatus={this.getTxStatus}
                                         eventId={this.state.eventId}
                                     />
@@ -164,8 +139,7 @@ class BiletoApp extends Component {
                             <div className="row mt-3">
                                 <div className="col">
                                     <SuspendTicketSales
-                                        drizzle={this.props.drizzle}
-                                        drizzleState={this.props.drizzleState}
+                                        suspendTicketSales={methods.suspendTicketSales}
                                         getTxStatus={this.getTxStatus}
                                         eventId={this.state.eventId}
                                     />
@@ -174,8 +148,7 @@ class BiletoApp extends Component {
                             <div className="row mt-3">
                                 <div className="col">
                                     <EndTicketSales
-                                        drizzle={this.props.drizzle}
-                                        drizzleState={this.props.drizzleState}
+                                        endTicketSales={methods.endTicketSales}
                                         getTxStatus={this.getTxStatus}
                                         eventId={this.state.eventId}
                                     />
@@ -192,24 +165,21 @@ class BiletoApp extends Component {
                     <div className="row mt-3">
                         <div className="col-4">
                             <CompleteEvent
-                                drizzle={this.props.drizzle}
-                                drizzleState={this.props.drizzleState}
+                                completeEvent={methods.completeEvent}
                                 getTxStatus={this.getTxStatus}
                                 eventId={this.state.eventId}
                             />
                         </div>
                         <div className="col-4">
                             <SettleEvent
-                                drizzle={this.props.drizzle}
-                                drizzleState={this.props.drizzleState}
+                                settleEvent={methods.settleEvent}
                                 getTxStatus={this.getTxStatus}
                                 eventId={this.state.eventId}
                             />
                         </div>
                         <div className="col-4">
                             <CancelEvent
-                                drizzle={this.props.drizzle}
-                                drizzleState={this.props.drizzleState}
+                                cancelEvent={methods.cancelEvent}
                                 getTxStatus={this.getTxStatus}
                                 eventId={this.state.eventId}
                             />
@@ -284,8 +254,7 @@ class BiletoApp extends Component {
                             <div className="row">
                                 <div className="col">
                                     <CancelPurchase
-                                        drizzle={this.props.drizzle}
-                                        drizzleState={this.props.drizzleState}
+                                        cancelPurchase={methods.cancelPurchase}
                                         getTxStatus={this.getTxStatus}
                                         purchaseId={this.state.purchaseId}
                                     />
@@ -294,8 +263,7 @@ class BiletoApp extends Component {
                             <div className="row mt-3">
                                 <div className="col">
                                     <RefundPurchase
-                                        drizzle={this.props.drizzle}
-                                        drizzleState={this.props.drizzleState}
+                                        refundPurchase={methods.refundPurchase}
                                         getTxStatus={this.getTxStatus}
                                         eventId={this.state.eventId}
                                         purchaseId={this.state.purchaseId}
@@ -314,8 +282,7 @@ class BiletoApp extends Component {
                         </div>
                         <div className="col-4">
                             <CheckIn
-                                drizzle={this.props.drizzle}
-                                drizzleState={this.props.drizzleState}
+                                checkIn={methods.checkIn}
                                 getTxStatus={this.getTxStatus}
                                 purchaseId={this.state.purchaseId}
                             />

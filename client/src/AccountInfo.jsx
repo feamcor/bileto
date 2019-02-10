@@ -1,95 +1,84 @@
 import React, { Component } from "react";
 
 class AccountInfo extends Component {
-  state = { dataKey1: null, dataKey2: null, dataKey3: null };
+    state = { dataKey1: null, dataKey2: null, dataKey3: null };
 
-  fetchData() {
-    const { methods } = this.props.drizzle.contracts.Bileto;
-    const { accounts } = this.props.drizzleState;
-    const dataKey1 = methods.getAccountRole.cacheCall(accounts[0]);
-    const dataKey2 = methods.getCountOrganizerEvents.cacheCall(accounts[0]);
-    const dataKey3 = methods.getCountCustomerPurchases.cacheCall(accounts[0]);
-    this.setState({ dataKey1, dataKey2, dataKey3 });
-  }
-
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { accounts } = this.props.drizzleState;
-    if (accounts[0] !== prevProps.drizzleState.accounts[0]) {
-      this.fetchData();
-    }
-  }
-
-  render() {
-    const { accounts, accountBalances } = this.props.drizzleState;
-    const { Bileto } = this.props.drizzleState.contracts;
-
-    const accountRole = Bileto.getAccountRole[this.state.dataKey1];
-    if (!accountRole || !accountRole.value) {
-      return "Loading...";
+    fetchData() {
+        const { account, methods } = this.props;
+        const dataKey1 = methods.getAccountRole.cacheCall(account);
+        const dataKey2 = methods.getCountOrganizerEvents.cacheCall(account);
+        const dataKey3 = methods.getCountCustomerPurchases.cacheCall(account);
+        this.setState({ dataKey1, dataKey2, dataKey3 });
     }
 
-    const countOrganizerEvents =
-      Bileto.getCountOrganizerEvents[this.state.dataKey2];
-    if (!countOrganizerEvents || !countOrganizerEvents.value) {
-      return "Loading...";
+    componentDidMount() {
+        this.fetchData();
     }
 
-    const countCustomerPurchases =
-      Bileto.getCountCustomerPurchases[this.state.dataKey3];
-    if (!countCustomerPurchases || !countCustomerPurchases.value) {
-      return "Loading...";
+    componentDidUpdate(prevProps) {
+        if (this.props.account !== prevProps.account) {
+            this.fetchData();
+        }
     }
 
-    const {
-      accountIsOwner,
-      accountIsOrganizer,
-      accountIsCustomer
-    } = accountRole.value;
+    render() {
+        const { account, accountBalance, results } = this.props;
+        const { dataKey1, dataKey2, dataKey3 } = this.state;
+        const accountRole = results.getAccountRole[dataKey1];
+        const countOrganizerEvents = results.getCountOrganizerEvents[dataKey2];
+        const countCustomerPurchases = results.getCountCustomerPurchases[dataKey3];
 
-    const countEvents = countOrganizerEvents.value;
+        if (
+            !accountRole ||
+            !accountRole.value ||
+            !countOrganizerEvents ||
+            !countOrganizerEvents.value ||
+            !countCustomerPurchases ||
+            !countCustomerPurchases.value
+        ) {
+            return "Loading...";
+        }
 
-    const countPurchases = countCustomerPurchases.value;
+        const { accountIsOwner, accountIsOrganizer, accountIsCustomer } = accountRole.value;
+        const countEvents = countOrganizerEvents.value;
+        const countPurchases = countCustomerPurchases.value;
 
-    return (
-      <div className="card shadow text-white bg-primary">
-        <h5 className="card-header">
-          <strong>ACCOUNT</strong> information
-        </h5>
-        <div className="card-body">
-          <p className="card-text">
-            <strong>Address: </strong>
-            {accounts[0]}
-          </p>
-          <p className="card-text">
-            <strong>Balance: </strong>
-            {this.props.fromWeiToEther(accountBalances[accounts[0]])}
-          </p>
-          <p className="card-text">
-            <strong>Roles: </strong>
-            <span className="card-text">
-              {accountIsOwner === true && " OWNER "}
-              {accountIsOwner === true && accountIsOrganizer === true && "/"}
-              {accountIsOrganizer === true &&
-                " ORGANIZER (" + countEvents + " events)"}
-              {(accountIsOwner === true || accountIsOrganizer === true) &&
-                accountIsCustomer === true &&
-                "/"}
-              {accountIsCustomer === true &&
-                " CUSTOMER (" + countPurchases + " purchases)"}
-              {accountIsOwner === false &&
-                accountIsOrganizer === false &&
-                accountIsCustomer === false &&
-                " NONE "}
-            </span>
-          </p>
-        </div>
-      </div>
-    );
-  }
+        return (
+            <div className="card shadow text-white bg-primary">
+                <h5 className="card-header">
+                    <strong>ACCOUNT</strong> information
+                </h5>
+                <div className="card-body">
+                    <p className="card-text">
+                        <strong>Address: </strong>
+                        {account}
+                    </p>
+                    <p className="card-text">
+                        <strong>Balance: </strong>
+                        {accountBalance}
+                    </p>
+                    <p className="card-text">
+                        <strong>Roles: </strong>
+                        <span className="card-text">
+                            {accountIsOwner === true && " OWNER "}
+                            {accountIsOwner === true && accountIsOrganizer === true && "/"}
+                            {accountIsOrganizer === true &&
+                                " ORGANIZER (" + countEvents + " events)"}
+                            {(accountIsOwner === true || accountIsOrganizer === true) &&
+                                accountIsCustomer === true &&
+                                "/"}
+                            {accountIsCustomer === true &&
+                                " CUSTOMER (" + countPurchases + " purchases)"}
+                            {accountIsOwner === false &&
+                                accountIsOrganizer === false &&
+                                accountIsCustomer === false &&
+                                " NONE "}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default AccountInfo;

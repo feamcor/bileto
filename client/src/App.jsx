@@ -93,15 +93,13 @@ class App extends Component {
     return (
       <React.Fragment>
         <nav className="navbar sticky-top navbar-dark text-white bg-dark">
-          <a href="#" className="navbar-brand">
-            <img
-              src={logo}
-              width="64px"
-              height="64px"
-              className="d-inline-block align-middle"
-              alt="bileto-logo"
-            />
-          </a>
+          <img
+            className="navbar-brand d-inline-block align-middle"
+            src={logo}
+            width="64px"
+            height="64px"
+            alt="bileto-logo"
+          />
           <h4 className="nav-text">
             <strong>BILETO</strong> a decentralized ticket store for Ethereum
           </h4>

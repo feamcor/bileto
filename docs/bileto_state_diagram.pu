@@ -1,0 +1,75 @@
+@startuml bileto_state_diagram
+skinparam Monochrome true
+left header Bileto Ticket Store\n
+right footer \n2019-02-12 by Fábio Corrêa <feamcor@gmail.com>
+
+title Bileto Smart Contract State Diagram\n
+
+state Store {
+    [*] --> Store.Unpaused: constructor()
+    Store.Unpaused: By Role.Pauser
+    Store.Unpaused --> Store.Paused: pause()
+    Store.Paused: By Role.Pauser
+    Store.Paused --> Store.Unpaused: unpause()
+}
+
+state Event {
+    [*] --> Event.Created: createEvent()
+    Event.Created: By Store.Owner
+    Event.Created: Store.Open
+    Event.Created --> Event.SalesStarted: startTicketSales()
+    Event.Created --> Event.Cancelled: cancelEvent()
+    Event.SalesStarted: By Event.Organizer
+    Event.SalesStarted: Store.Open
+    Event.SalesStarted --> Event.SalesSuspended: suspendTicketSales()
+    Event.SalesStarted --> Event.SalesFinished: endTicketSales()
+    Event.SalesStarted --> Event.Cancelled: cancelEvent()
+    Event.SalesSuspended: By Event.Organizer
+    Event.SalesSuspended: Store.Open
+    Event.SalesSuspended --> Event.SalesStarted: startTicketSales()
+    Event.SalesSuspended --> Event.SalesFinished: endTicketSales()
+    Event.SalesSuspended --> Event.Cancelled: cancelEvent()
+    Event.SalesFinished: By Event.Organizer
+    Event.SalesFinished: Store.Open
+    Event.SalesFinished --> Event.Completed: completeEvent()
+    Event.SalesFinished --> Event.Cancelled: cancelEvent()
+    Event.Completed: By Event.Organizer
+    Event.Completed: Store.Open
+    Event.Completed --> Event.Settled: settleEvent()
+    Event.Settled: By Store.Owner
+    Event.Settled: Store.Open
+    Event.Settled --> [*]
+    Event.Cancelled: By Event.Organizer
+    Event.Cancelled: Store.Open
+    Event.Cancelled --> [*]
+}
+
+state Purchase {
+    [*] --> Purchase.Completed: purchaseTickets()
+    Purchase.Completed: By Customer
+    Purchase.Completed: Store.Open
+    Purchase.Completed: Event.SalesStarted
+    Purchase.Completed: Purchase.Quantity <= Event.TicketsLeft
+    Purchase.Completed --> Purchase.Cancelled: cancelPurchase()
+    Purchase.Cancelled: By Customer
+    Purchase.Cancelled: Store.Open OR Store.Closed
+    Purchase.Cancelled: Event.SalesStarted
+    Purchase.Cancelled: OR Event.SalesSuspended
+    Purchase.Cancelled: OR Event.SalesFinished
+    Purchase.Cancelled: OR Event.Cancelled
+    Purchase.Cancelled: OR Store.Closed
+    Purchase.Cancelled --> Purchase.Refunded: refundPurchase()
+    Purchase.Refunded: By Organizer
+    Purchase.Refunded: Store.Open
+    Purchase.Refunded: OR Store.Closed
+    Purchase.Refunded --> [*]
+    Purchase.Completed --> Purchase.CheckedIn: checkIn()
+    Purchase.CheckedIn: By Customer
+    Purchase.CheckedIn: Store.Open
+    Purchase.CheckedIn: Event.SalesStarted
+    Purchase.CheckedIn: OR Event.SalesSuspended
+    Purchase.CheckedIn: OR Event.SalesFinished
+    Purchase.CheckedIn --> [*]
+}
+
+@enduml

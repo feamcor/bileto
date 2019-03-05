@@ -138,7 +138,8 @@ TBD
 -   [ ] Allow store balance to be distributed to many accounts.
 -   [ ] Allow event balance to be distributed to many accounts.
 -   [ ] Split contract between store and events.
--   [ ] Replace store currency from Ether to an [ERC-20](https://theethereum.wiki/w/index.php/ERC20_Token_Standard) utility token.
+-   [ ] Replace store currency from Ether to an [ERC-20](https://theethereum.wiki/w/index.php/ERC20_Token_Standard) utility token or to a stablecoin like [DAI](https://makerdao.com/en/dai).
 -   [ ] Integrate customer identification with uPort or other identity provider.
 -   [ ] Turn tickets into [ERC-721](https://eips.ethereum.org/EIPS/eip-721) NFT deeds.
+-   [ ] Could ticket validation during check-in benefit of ZK-proof like zkSNARKS or even zkSTARKS?
         _etc._

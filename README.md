@@ -25,7 +25,7 @@
 
 ## Introduction
 
-**Bileto** is a set of smart contracts, written in [Solidity](https://solidity.readthedocs.io/en/v0.5.5/index.html) [0.5.5](https://github.com/ethereum/solidity/releases/tag/v0.5.5), which implement the business of a ticket store. It is accompanied by a decentralized [web3](https://blockchainhub.net/web3-decentralized-web)-enabled application ([DApp](https://ethereum.stackexchange.com/questions/383/what-is-a-dapp)) where users, according to their roles, can manage the store, its events and perform ticket purchases, cancellations, refunds and event check-in.
+**Bileto** is a set of smart contracts, written in [Solidity](https://solidity.readthedocs.io/en/v0.5.6/index.html) [0.5.6](https://github.com/ethereum/solidity/releases/tag/v0.5.6), which implement the business of a ticket store. It is accompanied by a decentralized [web3](https://blockchainhub.net/web3-decentralized-web)-enabled application ([DApp](https://ethereum.stackexchange.com/questions/383/what-is-a-dapp)) where users, according to their roles, can manage the store, its events and perform ticket purchases, cancellations, refunds and event check-in.
 
 **Bileto** can be deployed to an [Ethereum](https://ethereum.org) blockchain, be it the public [mainnet](https://etherscan.io), a public testnet like [Rinkeby](https://rinkeby.etherscan.io), a private network, or on a local development blockchain like [Ganache](https://truffleframework.com/ganache).
 

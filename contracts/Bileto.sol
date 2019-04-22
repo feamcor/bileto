@@ -2,7 +2,7 @@ pragma solidity 0.5.6;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
-import "openzeppelin-solidity/contracts/drafts/Counter.sol";
+import "openzeppelin-solidity/contracts/drafts/Counters.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/utils/Address.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
@@ -11,7 +11,7 @@ import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 /// @title Bileto: a decentralized ticket store for the Ethereum blockchain.
 contract Bileto is Ownable, Pausable, ReentrancyGuard {
   using SafeMath for uint;
-  using Counter for Counter.Counter;
+  using Counters for Counters.Counter;
   using Address for address;
   using Address for address payable;
 
@@ -37,11 +37,11 @@ contract Bileto is Ownable, Pausable, ReentrancyGuard {
     uint excessBalance;
     uint refundableBalance;
     address[] organizers;
-    Counter.Counter counterEvents;
+    Counters.Counter counterEvents;
     mapping(uint => Event) events;
     mapping(address => uint[]) organizerEvents;
     address[] customers;
-    Counter.Counter counterPurchases;
+    Counters.Counter counterPurchases;
     mapping(uint => Purchase) purchases;
     mapping(address => uint[]) customerPurchases;
   }
@@ -174,7 +174,7 @@ contract Bileto is Ownable, Pausable, ReentrancyGuard {
     view 
     returns (bool) 
   {
-    require(_eventId <= store.counterEvents.current, "E002");
+    require(_eventId <= store.counterEvents.current(), "E002");
     return true;
   }
 
@@ -198,7 +198,7 @@ contract Bileto is Ownable, Pausable, ReentrancyGuard {
     view
     returns (bool)
   {
-    require(_purchaseId <= store.counterPurchases.current, "E003");
+    require(_purchaseId <= store.counterPurchases.current(), "E003");
     return true;
   }
 
@@ -236,7 +236,8 @@ contract Bileto is Ownable, Pausable, ReentrancyGuard {
     require(bytes(_externalId).length != 0, "E013");
     require(bytes(_name).length != 0, "E014");
     require(_ticketsOnSale > 0, "E016");
-    eventId = store.counterEvents.next();
+    store.counterEvents.increment();
+    eventId = store.counterEvents.current();
     store.events[eventId].status = EventStatus.Created;
     store.events[eventId].externalId = keccak256(bytes(_externalId));
     store.events[eventId].organizer = msg.sender;
@@ -401,7 +402,8 @@ contract Bileto is Ownable, Pausable, ReentrancyGuard {
     require(_timestamp > 0, "E028");
     require(bytes(_customerId).length != 0, "E029");
     require(msg.value == _quantity.mul(store.events[_eventId].ticketPrice), "E030");
-    purchaseId = store.counterPurchases.next();
+    store.counterPurchases.increment();
+    purchaseId = store.counterPurchases.current();
     store.purchases[purchaseId].status = PurchaseStatus.Completed;
     store.purchases[purchaseId].eventId = _eventId;
     store.purchases[purchaseId].quantity = _quantity;
@@ -523,8 +525,8 @@ contract Bileto is Ownable, Pausable, ReentrancyGuard {
     storeSettledBalance = store.settledBalance;
     storeExcessBalance = store.excessBalance;
     storeRefundableBalance = store.refundableBalance;
-    storeCounterEvents = store.counterEvents.current;
-    storeCounterPurchases = store.counterPurchases.current;
+    storeCounterEvents = store.counterEvents.current();
+    storeCounterPurchases = store.counterPurchases.current();
   }
 
   /// @notice Fetch event basic information.
